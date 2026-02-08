@@ -24,6 +24,9 @@ export const useEditorStore = defineStore('editor', () => {
   // 当前拾取的颜色
   const currentColor = ref<ColorRGB | null>(null);
 
+  // 预览颜色（鼠标悬停时的实时颜色）
+  const previewColor = ref<ColorRGB | null>(null);
+
   // 放大镜设置
   const magnifierEnabled = ref(true);
   const magnifierScale = ref(4);
@@ -31,6 +34,14 @@ export const useEditorStore = defineStore('editor', () => {
 
   // 颜色拾取开关
   const isPickingEnabled = ref(false);
+
+  // 拾取颜色历史记录
+  interface PickedColor extends ColorRGB {
+    id: number;
+    timestamp: number;
+  }
+  const pickedColors = ref<PickedColor[]>([]);
+  let nextId = 1;
 
   // 计算属性：各种颜色格式
   const hexColor = computed(() => {
@@ -193,7 +204,34 @@ export const useEditorStore = defineStore('editor', () => {
     const g = data[1] ?? 0;
     const b = data[2] ?? 0;
 
-    currentColor.value = { r, g, b };
+    previewColor.value = { r, g, b };
+  }
+
+  // 动作：保存当前拾取的颜色到历史记录
+  function savePickedColor() {
+    if (!previewColor.value) return;
+
+    const color: PickedColor = {
+      id: nextId++,
+      ...previewColor.value,
+      timestamp: Date.now(),
+    };
+
+    // 添加到历史记录开头
+    pickedColors.value.unshift(color);
+  }
+
+  // 动作：删除某个拾取的颜色
+  function removePickedColor(id: number) {
+    const index = pickedColors.value.findIndex(c => c.id === id);
+    if (index !== -1) {
+      pickedColors.value.splice(index, 1);
+    }
+  }
+
+  // 动作：清空拾取历史
+  function clearPickedColors() {
+    pickedColors.value = [];
   }
 
   // 动作：复制颜色到剪贴板
@@ -239,12 +277,18 @@ export const useEditorStore = defineStore('editor', () => {
     image.value = null;
     imageUrl.value = '';
     currentColor.value = null;
+    previewColor.value = null;
+    pickedColors.value = [];
     resetTransform();
   }
 
   // 动作：切换颜色拾取模式
   function togglePicking() {
     isPickingEnabled.value = !isPickingEnabled.value;
+    // 关闭拾取模式时清除预览颜色
+    if (!isPickingEnabled.value) {
+      previewColor.value = null;
+    }
   }
 
   return {
@@ -257,6 +301,8 @@ export const useEditorStore = defineStore('editor', () => {
     mousePos,
     isMouseInCanvas,
     currentColor,
+    previewColor,
+    pickedColors,
     magnifierEnabled,
     magnifierScale,
     magnifierSize,
@@ -278,6 +324,9 @@ export const useEditorStore = defineStore('editor', () => {
     updateTransform,
     resetTransform,
     pickColor,
+    savePickedColor,
+    removePickedColor,
+    clearPickedColors,
     copyColorToClipboard,
     updateMousePos,
     setMouseInCanvas,

@@ -8,6 +8,7 @@
       @mouseleave="handleMouseLeave"
       @wheel.prevent="handleWheel"
       @mouseenter="handleMouseEnter"
+      @contextmenu="handleContextMenu"
       class="main-canvas"
     ></canvas>
   </div>
@@ -85,9 +86,20 @@ function fitImageToCanvas() {
 // 处理鼠标按下
 function handleMouseDown(e: MouseEvent) {
   if (e.button !== 0) return; // 只响应左键
+
   isDragging = true;
   dragStart = { x: e.clientX, y: e.clientY };
   transformStart = { ...store.transform };
+}
+
+// 处理右键点击（保存颜色）
+function handleContextMenu(e: MouseEvent) {
+  e.preventDefault(); // 阻止默认右键菜单
+
+  // 如果在拾取模式下，保存当前颜色
+  if (store.isPickingEnabled && store.previewColor) {
+    store.savePickedColor();
+  }
 }
 
 // 处理鼠标移动
