@@ -1,5 +1,85 @@
-# Vue 3 + TypeScript + Vite
+# 颜色拾取专家 (Color Picker Pro)
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+一款专业的图片颜色拾取与分析工具，支持多种图片来源、像素级颜色预览和多格式颜色值转换。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 功能特性
+
+### 图片加载
+- **拖拽加载** - 直接拖拽图片文件到窗口即可加载
+- **剪贴板粘贴** - 支持 Ctrl+V 粘贴剪贴板中的图片
+- **文件选择** - 点击按钮选择本地图片文件
+- **URL 加载** - 输入图片 URL 地址加载网络图片
+
+### 图片浏览
+- **地图式缩放** - 鼠标滚轮缩放，以鼠标位置为中心
+- **拖拽平移** - 左键拖拽移动图片位置
+- **一键复位** - 按 ESC 键或点击按钮重置视图
+
+### 颜色拾取
+- **拾取模式** - 点击工具栏按钮开启/关闭颜色拾取
+- **右键保存** - 在拾取模式下，右键点击保存当前颜色
+- **实时预览** - 鼠标移动时实时显示当前像素颜色
+- **放大镜** - 可调节 2x-16x 倍数的像素级放大镜
+- **十字准星** - 精确定位拾取位置
+- **像素网格** - 放大镜中显示像素边界
+
+### 颜色格式
+支持四种颜色格式显示与复制：
+- **HEX** - 十六进制颜色值（如 `#ff0000`）
+- **RGB** - RGB 格式（如 `rgb(255, 0, 0)`）
+- **HSV** - HSV 格式（如 `hsv(0, 100%, 100%)`）
+- **HSL** - HSL 格式（如 `hsl(0, 100%, 50%)`）
+
+### 数据管理
+- **颜色历史** - 自动记录拾取的颜色，带编号
+- **批量复制** - 一键复制所有颜色列表（制表符分隔）
+- **单色复制** - 点击任意颜色值快速复制
+- **删除功能** - 单独删除或清空所有保存的颜色
+
+## 技术栈
+
+- **Vue 3** - 使用 Composition API 和 `<script setup>`
+- **TypeScript** - 完整类型支持
+- **Vite** - 快速开发构建工具
+- **Pinia** - 状态管理
+
+## 开发
+
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 预览生产构建
+npm run preview
+
+# 类型检查监听
+npm run watch
+```
+
+## 使用说明
+
+1. **加载图片** - 拖拽、粘贴或选择图片文件
+2. **开启拾取** - 点击工具栏中的"拾取颜色"按钮
+3. **预览颜色** - 在图片上移动鼠标查看实时颜色
+4. **保存颜色** - 右键点击保存当前颜色到列表
+5. **复制颜色** - 点击颜色值或复制按钮复制到剪贴板
+
+## 快捷键
+
+| 按键 | 功能 |
+|------|------|
+| `ESC` | 重置视图 |
+| `+` / `=` | 放大 |
+| `-` / `_` | 缩小 |
+| `Ctrl + V` | 粘贴剪贴板图片 |
+| 右键 | 保存当前颜色（拾取模式下） |
+
+## 许可证
+
+MIT

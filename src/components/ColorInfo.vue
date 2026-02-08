@@ -58,83 +58,107 @@
       </div>
     </div>
 
-    <!-- 颜色列表表格 -->
-    <div class="color-table-container" v-if="store.pickedColors.length > 0">
+    <!-- 已保存颜色列表 -->
+    <div class="picked-list" v-if="store.pickedColors.length > 0">
       <div class="list-header">已保存 ({{ store.pickedColors.length }})</div>
-      <table class="color-table">
-        <thead>
-          <tr>
-            <th class="col-id">#</th>
-            <th class="col-preview">预览</th>
-            <th class="col-hex">HEX</th>
-            <th class="col-rgb">RGB</th>
-            <th class="col-hsv">HSV</th>
-            <th class="col-hsl">HSL</th>
-            <th class="col-actions">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="color in store.pickedColors"
-            :key="color.id"
-            class="color-row"
-          >
-            <td class="col-id">{{ color.id }}</td>
-            <td class="col-preview">
-              <div
-                class="color-preview-box"
-                :style="{ backgroundColor: getColorString(color) }"
-                :title="'点击复制所有格式'"
-                @click="copySingleColor(color)"
-              ></div>
-            </td>
-            <td class="col-hex">
-              <span
-                class="color-cell-value"
-                @click="copyColorValue(color, 'hex')"
-                :class="{ copied: copiedFormat === 'color-' + color.id + '-hex' }"
-                title="点击复制 HEX"
-              >{{ rgbToHex(color.r, color.g, color.b) }}</span>
-            </td>
-            <td class="col-rgb">
-              <span
-                class="color-cell-value"
-                @click="copyColorValue(color, 'rgb')"
-                :class="{ copied: copiedFormat === 'color-' + color.id + '-rgb' }"
-                title="点击复制 RGB"
-              >{{ rgbToString(color) }}</span>
-            </td>
-            <td class="col-hsv">
-              <span
-                class="color-cell-value"
-                @click="copyColorValue(color, 'hsv')"
-                :class="{ copied: copiedFormat === 'color-' + color.id + '-hsv' }"
-                title="点击复制 HSV"
-              >{{ getHsvString(color) }}</span>
-            </td>
-            <td class="col-hsl">
-              <span
-                class="color-cell-value"
-                @click="copyColorValue(color, 'hsl')"
-                :class="{ copied: copiedFormat === 'color-' + color.id + '-hsl' }"
-                title="点击复制 HSL"
-              >{{ getHslString(color) }}</span>
-            </td>
-            <td class="col-actions">
+      <div class="picked-cards">
+        <div
+          class="color-card history-card"
+          v-for="color in store.pickedColors"
+          :key="color.id"
+        >
+          <div class="card-header">
+            <span class="card-title">#{{ color.id }}</span>
+            <div class="card-actions">
               <button
-                @click="store.removePickedColor(color.id)"
-                class="remove-btn"
-                title="删除此颜色"
+                @click="copySingleColor(color)"
+                class="copy-all-btn"
+                title="复制此颜色所有格式"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                 </svg>
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <button
+                @click="store.removePickedColor(color.id)"
+                class="remove-icon-btn"
+                title="删除"
+              >×</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="preview-layout">
+              <div
+                class="color-box"
+                :style="{ backgroundColor: getColorString(color) }"
+              ></div>
+              <div class="color-values">
+                <div
+                  class="color-value-item"
+                  @click="copyColorValue(color, 'hex')"
+                  :class="{ copied: copiedFormat === 'color-' + color.id + '-hex' }"
+                  title="点击复制 HEX"
+                >
+                  <span class="color-label">HEX</span>
+                  <span class="color-value">{{ rgbToHex(color.r, color.g, color.b) }}</span>
+                  <span class="copy-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="color-value-item"
+                  @click="copyColorValue(color, 'rgb')"
+                  :class="{ copied: copiedFormat === 'color-' + color.id + '-rgb' }"
+                  title="点击复制 RGB"
+                >
+                  <span class="color-label">RGB</span>
+                  <span class="color-value">{{ rgbToString(color) }}</span>
+                  <span class="copy-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="color-value-item"
+                  @click="copyColorValue(color, 'hsv')"
+                  :class="{ copied: copiedFormat === 'color-' + color.id + '-hsv' }"
+                  title="点击复制 HSV"
+                >
+                  <span class="color-label">HSV</span>
+                  <span class="color-value">{{ getHsvString(color) }}</span>
+                  <span class="copy-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="color-value-item"
+                  @click="copyColorValue(color, 'hsl')"
+                  :class="{ copied: copiedFormat === 'color-' + color.id + '-hsl' }"
+                  title="点击复制 HSL"
+                >
+                  <span class="color-label">HSL</span>
+                  <span class="color-value">{{ getHslString(color) }}</span>
+                  <span class="copy-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="no-color" v-else>
@@ -382,6 +406,11 @@ function resetCopyTimeout() {
   font-weight: 600;
 }
 
+.card-actions {
+  display: flex;
+  gap: 4px;
+}
+
 .card-body {
   padding: 12px;
 }
@@ -455,10 +484,11 @@ function resetCopyTimeout() {
   color: #4ade80;
 }
 
-/* 表格容器 */
-.color-table-container {
+/* 历史列表 */
+.picked-list {
   display: flex;
   flex-direction: column;
+  gap: 12px;
   flex: 1;
   overflow: hidden;
 }
@@ -471,177 +501,88 @@ function resetCopyTimeout() {
   flex-shrink: 0;
 }
 
-.color-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
+.picked-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   overflow-y: auto;
-  display: block;
   overflow-x: hidden;
+  padding-right: 4px;
+  flex: 1;
 }
 
-.color-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.color-table thead::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #333;
-  z-index: -1;
-}
-
-.color-table th {
-  background: #333;
-  color: #888;
-  font-weight: 600;
-  text-align: left;
-  padding: 6px 8px;
-  border-bottom: 1px solid #444;
-  position: relative;
-}
-
-.color-table th.col-id {
-  width: 30px;
-  text-align: center;
-}
-
-.color-table th.col-preview {
-  width: 40px;
-  text-align: center;
-}
-
-.color-table th.col-hex,
-.color-table th.col-rgb,
-.color-table th.col-hsv,
-.color-table th.col-hsl {
-  min-width: 70px;
-}
-
-.color-table th.col-actions {
-  width: 40px;
-  text-align: center;
-}
-
-.color-table tbody {
-  display: block;
-  overflow-y: auto;
-  max-height: calc(100vh - 300px);
-}
-
-.color-table tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.color-table tbody tr {
-  border-bottom: 1px solid #3a3a3a;
-}
-
-.color-table tbody tr:hover {
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.color-table td {
-  padding: 6px 8px;
-  color: #ccc;
-}
-
-.color-table td.col-id {
-  text-align: center;
-  color: #666;
-  font-size: 10px;
-}
-
-.color-table td.col-preview {
-  text-align: center;
-  padding: 4px;
-}
-
-.color-preview-box {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  border: 1px solid #444;
-  margin: 0 auto;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.color-preview-box:hover {
-  transform: scale(1.1);
-  border-color: #3b82f6;
-}
-
-.color-cell-value {
-  font-family: 'Consolas', 'Monaco', monospace;
-  cursor: pointer;
-  display: block;
-  padding: 2px 4px;
-  border-radius: 3px;
-  transition: background 0.2s;
-}
-
-.color-cell-value:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-}
-
-.color-cell-value.copied {
-  background: #1a3a1a;
-  color: #4ade80;
-}
-
-.col-actions {
-  text-align: center;
-}
-
-.remove-btn {
-  background: transparent;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 2px;
-  border-radius: 3px;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.remove-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-}
-
-/* 自定义滚动条 */
-.color-table::-webkit-scrollbar,
-.color-table tbody::-webkit-scrollbar {
+/* 自定义滚动条样式 */
+.picked-cards::-webkit-scrollbar {
   width: 6px;
 }
 
-.color-table::-webkit-scrollbar-track,
-.color-table tbody::-webkit-scrollbar-track {
+.picked-cards::-webkit-scrollbar-track {
   background: #222;
   border-radius: 3px;
 }
 
-.color-table::-webkit-scrollbar-thumb,
-.color-table tbody::-webkit-scrollbar-thumb {
+.picked-cards::-webkit-scrollbar-thumb {
   background: #444;
   border-radius: 3px;
 }
 
-.color-table::-webkit-scrollbar-thumb:hover,
-.color-table tbody::-webkit-scrollbar-thumb:hover {
+.picked-cards::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.history-card {
+  border: 1px solid #444;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.history-card .card-header {
+  background: #2a2a2a;
+  border-bottom: 1px solid #444;
+}
+
+.history-card .card-title {
+  color: #888;
+}
+
+.copy-all-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-all-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.remove-icon-btn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #666;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.remove-icon-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
 }
 
 .no-color {
